@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>District Clearance Essay Grader</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    textarea { width: 100%; height: 150px; margin-top: 10px; }
+    button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+    .result-box { margin-top: 20px; padding: 15px; background: #f4f4f4; border-radius: 5px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>District Clearance Quest Journal Submission</h2>
+  <label>Student ID / Name:</label>
+  <input type="text" id="studentId" style="width: 100%; margin-bottom: 10px;">
+  
+  <label>Your Journal Essay:</label>
+  <textarea id="essay" placeholder="Write what you did or learned in this district..."></textarea>
+  
+  <button onclick="submitEssay()">Submit for AI Feedback</button>
+
+  <div id="result" class="result-box" style="display:none;"></div>
+
+  <script>
+    async function submitEssay() {
+      const studentId = document.getElementById('studentId').value;
+      const essay = document.getElementById('essay').value;
+      const resultBox = document.getElementById('result');
+      
+      if (!essay) { alert('Please enter your essay!'); return; }
+      
+      resultBox.style.display = 'block';
+      resultBox.innerText = 'Evaluating your essay with AI... Please wait...';
+
+      // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbydIIx7Pjz3Nf8tUcVJBkbIlazXXRZRPfDEvzbGyInvzo-CEy52xbB7RbvLNDGxwRKXtQ/exec';
+
+      try {
+        const response = await fetch(scriptUrl, {
+          method: 'POST',
+          body: JSON.stringify({ studentId, essay })
+        });
+        const data = await response.json();
+        resultBox.innerText = data.evaluation;
+      } catch (err) {
+        resultBox.innerText = 'Error processing evaluation. Please try again.';
+      }
+    }
+  </script>
+</body>
+</html>
